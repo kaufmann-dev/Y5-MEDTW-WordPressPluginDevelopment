@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Post Statistics
  * Description: Another amazing plugin.
- * Version: 1.0
- * Author: HTL Super Coder
+ * Version: 0.1
+ * Author: David Kaufmann
  */
 
 /**
@@ -13,21 +13,41 @@
 
 class PostStat{
     function __construct(){
-        add_action('admin_menu', 'pluginSettingMenuEntry');
-        add_action('admin_init', array($this, 'settings'));
+        add_action(
+            'admin_menu',
+            array($this, 'pluginSettingMenuEntry')
+        );
+        add_action(
+            'admin_init',
+            array($this, 'settings')
+        );
     }
-
-    /**
-     * 
-     */
 
     function seeting(){
         // https://developer.wordpress.org/reference/functions/add_settings_section/
-        add_settings_section('psp_first_section', null, null, 'post-stat-settings-page');
-        add_settings_field('psp_location', 'Display location', array($this, 'locationHTML'), 'post-stat-settings-page');
+        add_settings_section(
+            'psp_first_section',
+            null,
+            null,
+            'post-stat-settings-page'
+        );
+
+        // https://developer.wordpress.org/reference/functions/add_settings_field/
+        add_settings_field(
+            'psp_location',
+            'Display location', 
+            array($this, 'locationHTML'), 'post-stat-settings-page', 'psp_first_section');
+
+        // https://developer.wordpress.org/reference/functions/register_setting/
+        register_setting(
+            'post-stat-plugin',
+            'psp_location',
+            array('sanitize_callback' => 'sanitize_text_field', 'default' => 0)
+        );
     }
 
     function pluginSettingMenuEntry(){
+        // https://developer.wordpress.org/reference/functions/add_options_page/
         add_options_page(
             'Post Stat Settings' ,
             'Post Stat',
@@ -62,8 +82,8 @@ class PostStat{
     function locationHTML(){
         ?>
             <select name="psp_location">
-                <option value="0">Beginning of post</option>
-                <option value="1">End of post</option>
+                <option value="0"><?php selected(get_option('psp_location'), '0') ?>Beginning of post</option>
+                <option value="1"><?php selected(get_option('psp_location'), '1') ?>End of post</option>
         <?php
     }
 }
