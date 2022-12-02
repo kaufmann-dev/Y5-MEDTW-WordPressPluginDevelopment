@@ -29,18 +29,18 @@ class Registration{
             'psp_first_section',
             null,
             null,
-            'post-stat-settings-page'
+            'registrations-settings-page'
         );
 
         // https://developer.wordpress.org/reference/functions/add_settings_field/
         add_settings_field(
             'psp_location',
             'Display location', 
-            array($this, 'locationHTML'), 'post-stat-settings-page', 'psp_first_section');
+            array($this, 'locationHTML'), 'registrations-settings-page', 'psp_first_section');
 
         // https://developer.wordpress.org/reference/functions/register_setting/
         register_setting(
-            'post-stat-plugin',
+            'registrations-plugin',
             'psp_location',
             array('sanitize_callback' => 'sanitize_text_field', 'default' => 0)
         );
@@ -51,25 +51,25 @@ class Registration{
             'psp_headline',
             'Headline Text',
             array($this, 'headlineHTML'),
-            'post-stat-settings-page',
+            'registrations-settings-page',
             'psp_first_section'
         );
         register_setting(
-            'post_stat_plugin',
+            'registrations_plugin',
             'psp_headline',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Post Statistic')
+            array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Registration')
         );
 
         add_settings_field(
             'psp_wordcount',
             'Word Count',
             array($this, 'checkboxHTML'),
-            'post-stat-settings-page',
+            'registrations-settings-page',
             'psp_first_section',
             array('name'=>'psp_wordcount')
         );
         register_setting(
-            'post_stat_plugin',
+            'registrations_plugin',
             'psp_wordcount',
             array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
         );
@@ -78,12 +78,12 @@ class Registration{
             'psp_charcount',
             'Character Count',
             array($this, 'checkboxHTML'),
-            'post-stat-settings-page',
+            'registrations-settings-page',
             'psp_first_section',
             array('name'=>'psp_charcount')
         );
         register_setting(
-            'post_stat_plugin',
+            'registrations_plugin',
             'psp_charcount',
             array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
         );
@@ -92,12 +92,12 @@ class Registration{
             'psp_readtime',
             'Read time',
             array($this, 'checkboxHTML'),
-            'post-stat-settings-page',
+            'registrations-settings-page',
             'psp_first_section',
             array('name'=>'psp_readtime')
         );
         register_setting(
-            'post_stat_plugin',
+            'registrations_plugin',
             'psp_readtime',
             array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
         );
@@ -118,26 +118,26 @@ class Registration{
     function pluginSettingMenuEntry(){
         // https://developer.wordpress.org/reference/functions/add_options_page/
         add_options_page(
-            'Post Stat Settings' ,
-            'Post Stat',
+            'Registrations Settings' ,
+            'Registrations',
             'manage_options',
-            'htl-post-stat',
+            'htl-registrations',
             array($this, 'pluginSettingHTML')
         );
     }
     
     /**
-     * Markup für die Umsetzung der Backend Page des HTL Post Stat Plugins
+     * Markup für die Umsetzung der Backend Page des HTL Registrations Plugins
      */
 
     function pluginSettingHTML(){
         ?>
             <div class="wrap">
-                <h1>Post Stat Settings</h1>
+                <h1>Registrations Settings</h1>
                 <form action="options.php" method="post">
                     <?php
-                        settings_fields('post-stat-plugin');
-                        do_settings_sections('post-stat-settings-page');
+                        settings_fields('registrations-plugin');
+                        do_settings_sections('registrations-settings-page');
                         submit_button();
                     ?>
                 </form>
@@ -159,7 +159,7 @@ class Registration{
 
     function headlineHTML(){
         ?>
-            <input type="text" name="psp_headline" value="<?php echo get_option('psp_headline', 'Post Statistics') ?>">
+            <input type="text" name="psp_headline" value="<?php echo get_option('psp_headline', 'Registrations') ?>">
         <?php
     }
 }
