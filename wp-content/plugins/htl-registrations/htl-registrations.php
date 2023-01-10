@@ -11,6 +11,23 @@
  * https://developer.wordpress.org/reference/hooks/admin_menu/
  */
 
+global $wpdb;
+
+$category = 'Development';
+
+global $wpdb;
+$query = $wpdb->prepare("SELECT *  FROM ".$wpdb->prefix."posts WHERE post_category LIKE %s", $category);
+$cities = $wpdb->get_results($query);
+
+register_activation_hook( __FILE__, 'my_plugin_create_table' );
+function my_plugin_create_table() {
+	// Create DB-Tables here
+}
+
+add_shortcode( 'foobar', 'foobar_func' );
+function foobar_func() {
+	return "foobar";
+}
 class Registration{
     function __construct(){
         add_action(
