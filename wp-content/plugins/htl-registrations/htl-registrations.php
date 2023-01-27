@@ -9,10 +9,11 @@
 class HtlItForm {
 
     public function __construct() {
+        // Constructor
         $this -> uploadRegistration();
         add_action('admin_menu', array($this, 'pluginSettingMenuEntry'));
         add_action('admin_init', array($this, 'settings'));
-        add_shortcode('htlform', array($this, 'outputForm'));
+        add_shortcode('registrations', array($this, 'outputForm'));
     }
 
     function settings() {
@@ -60,12 +61,12 @@ class HtlItForm {
                     <div class="col">
                         <h1>Registrierte Benutzer</h1>
                         <br>
-                        <table class="table">
+                        <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>Vorname</th>
                                 <th>Nachname</th>
-                                <th>E-Mail</th>
+                                <th>EMail</th>
                                 <th>Newsletter</th>
                             </tr>
                             </thead>
