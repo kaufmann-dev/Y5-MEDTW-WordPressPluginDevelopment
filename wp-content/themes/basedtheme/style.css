@@ -1,0 +1,135 @@
+/*
+Theme Name: Kaufmannic
+Author: David Kaufmann
+Author URI: https://d-kaufmann.github.io/
+Description: Kaufmannic is a sleek and modern WordPress theme designed by David Kaufmann.
+Version: 0.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: kaufmannic_theme
+*/
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+    body {
+      background-color: #222;
+      color: #fff;
+    }
+}
+
+/* Navbar */
+.my-menu-class {
+    text-align: center;
+    margin: 30px 0;
+}
+.my-menu-class ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.my-menu-class li {
+    display: inline-block;
+    margin: 0 10px;
+}
+.my-menu-class a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: #eee;
+}
+.my-menu-class .current-menu-item a {
+    background-color: #333;
+    color: #fff;
+}
+@media (prefers-color-scheme: dark) {
+    .my-menu-class a {
+        color: #ddd;
+        background-color: #444;
+    }
+    .my-menu-class .current-menu-item a {
+        background-color: #ddd;
+        color: #444;
+    }
+}
+
+/* Wrapper */
+#myWrapper {
+    display: flex;
+    flex-direction:row;
+    margin: 0 30px;
+}
+
+/* Main */
+main {
+    margin-right: 20px;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.sidebar h2 {
+    font-size: 1.2em;
+    margin-top: 0;
+}
+.sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+.sidebar ul li a {
+    color: #333;
+    text-decoration: none;
+}
+.sidebar ul li a:hover {
+    color: #666;
+}
+@media (prefers-color-scheme: dark) {
+    .sidebar {
+        background-color: #444;
+        border-color: #888;
+    }
+    .sidebar h2 {
+        color: #fff;
+    }
+    .sidebar ul li a {
+        color: #ccc;
+    }
+    .sidebar ul li a:hover {
+        color: #fff;
+    }
+}
+  
+/* Footer */
+footer {
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 14px;
+    padding: 20px 0;
+    text-align: center;
+    border-radius: 5px;
+    margin: 20px;
+}
+footer p {
+    margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+    footer {
+        background-color: #333;
+        color: #ddd;
+    }
+    footer p {
+        color: #ddd;
+    }
+}
