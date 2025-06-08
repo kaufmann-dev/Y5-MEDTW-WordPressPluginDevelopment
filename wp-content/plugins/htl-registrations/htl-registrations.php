@@ -6,7 +6,7 @@
  * Author: David Kaufmann
  */
 
-class HtlItForm {
+class Registrations {
 
     public function __construct() {
         // Constructor
@@ -96,11 +96,11 @@ class HtlItForm {
                     <input name='action' type="hidden" value='custom_form_submit'>
                     <div class="form-group">
                         <label>Vorname</label>
-                        <input type="text" name="first_name" class="form-control" required placeholder="Max">
+                        <input type="text" name="first_name" class="form-control" required placeholder="David">
                         <label>Nachname</label>
-                        <input type="text" name="last_name" class="form-control" required placeholder="Mustermann">
+                        <input type="text" name="last_name" class="form-control" required placeholder="Kaufmann">
                         <label>E-Mail</label>
-                        <input type="text" name="email" class="form-control" required placeholder="muster@htlkrems.at">
+                        <input type="text" name="email" class="form-control" required placeholder="d.kaufmann@htlkrems.at">
                         <div class="form-check">
                             <input type="checkbox" name="newsletter_abo" class="form-check-input">
                             <label>Newsletter</label>
@@ -131,9 +131,9 @@ class HtlItForm {
             }
 
             $data = array('first_name' => $first_name, 'last_name' => $last_name, 'email' => $email, 'newsletter_abo' => $newsletter);
-            $wpdb->insert($table_name, $data);
+            $wpdb -> insert($table_name, $data);
         }
     }
 }
 
-new HtlItForm();
+new Registrations();
