@@ -1,184 +1,139 @@
 <?php
 /**
- * Plugin Name: Registrations
- * Description: Late Registration
- * Version: 0.1
- * Author: Kanye West
+ * Plugin Name: HTL Registrations
+ * Description: Renders a form for creations of and a table for display of all users.
+ * Version: 1.0
+ * Author: David Kaufmann
  */
 
-/**
- * https://developer.wordpress.org/reference/functions/add_action/
- * https://developer.wordpress.org/reference/hooks/admin_menu/
- */
+class Registrations {
 
-global $wpdb;
-
-$category = 'Development';
-
-global $wpdb;
-$query = $wpdb->prepare("SELECT *  FROM ".$wpdb->prefix."posts WHERE post_category LIKE %s", $category);
-$cities = $wpdb->get_results($query);
-
-register_activation_hook( __FILE__, 'my_plugin_create_table' );
-function my_plugin_create_table() {
-	// Create DB-Tables here
-}
-
-add_shortcode( 'foobar', 'foobar_func' );
-function foobar_func() {
-	return "foobar";
-}
-class Registration{
-    function __construct(){
-        add_action(
-            'admin_menu',
-            array($this, 'pluginSettingMenuEntry')
-        );
-        add_action(
-            'admin_init',
-            array($this, 'settings')
-        );
+    public function __construct() {
+        // Constructor
+        $this -> uploadRegistration();
+        add_action('admin_menu', array($this, 'pluginSettingMenuEntry'));
+        add_action('admin_init', array($this, 'settings'));
+        add_shortcode('registrations', array($this, 'outputForm'));
     }
 
-    function settings(){
-        // https://developer.wordpress.org/reference/functions/add_settings_section/
-        add_settings_section(
-            'psp_first_section',
-            null,
-            null,
-            'registrations-settings-page'
-        );
+    function settings() {
+        // Settings Page
+        add_settings_section('ifp_first_section', null, null, 'it-form-settings-page');
 
-        // https://developer.wordpress.org/reference/functions/add_settings_field/
-        add_settings_field(
-            'psp_location',
-            'Display location', 
-            array($this, 'locationHTML'), 'registrations-settings-page', 'psp_first_section');
-
-        // https://developer.wordpress.org/reference/functions/register_setting/
-        register_setting(
-            'registrations-plugin',
-            'psp_location',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 0)
-        );
-
-        // Selbst erstellte Funktionen
-
-        add_settings_field(
-            'psp_headline',
-            'Headline Text',
-            array($this, 'headlineHTML'),
-            'registrations-settings-page',
-            'psp_first_section'
-        );
-        register_setting(
-            'registrations_plugin',
-            'psp_headline',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Registration')
-        );
-
-        add_settings_field(
-            'psp_wordcount',
-            'Word Count',
-            array($this, 'checkboxHTML'),
-            'registrations-settings-page',
-            'psp_first_section',
-            array('name'=>'psp_wordcount')
-        );
-        register_setting(
-            'registrations_plugin',
-            'psp_wordcount',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
-        );
-
-        add_settings_field(
-            'psp_charcount',
-            'Character Count',
-            array($this, 'checkboxHTML'),
-            'registrations-settings-page',
-            'psp_first_section',
-            array('name'=>'psp_charcount')
-        );
-        register_setting(
-            'registrations_plugin',
-            'psp_charcount',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
-        );
-
-        add_settings_field(
-            'psp_readtime',
-            'Read time',
-            array($this, 'checkboxHTML'),
-            'registrations-settings-page',
-            'psp_first_section',
-            array('name'=>'psp_readtime')
-        );
-        register_setting(
-            'registrations_plugin',
-            'psp_readtime',
-            array('sanitize_callback' => 'sanitize_text_field', 'default' => 1)
-        );
+        // Submit Message Entry
+        add_settings_field('submit_message', 'Submit Message', array($this, 'messageHTML'), 'it-form-settings-page', 'ifp_first_section');
+        register_setting('it_form_plugin', 'submit_message', array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Submit Message'));
     }
 
-    // Benötigt für die selbst erstellten Funktionen
-    function checkboxHTML($args){
+    function pluginSettingMenuEntry() {
+        // Einstellungen Entry
+        add_options_page('Registrations Einstellungen', 'Registrations', 'manage_options', 'it_form_plugin', array($this, 'pluginSettingHTML'));
+    }
+
+    function messageHTML() {
+        // Submit Message Input
         ?>
-            <input
-                type="checkbox" 
-                name="<?php echo $args['name'] ?>" 
-                value='1' 
-                <?php checked(get_option($args['name']), 1); ?>
-            >
+            <div class="input-group">
+                <input type="text" name="submit_message" placeholder="Submit Message" class="form-control input-lg"
+                    value="<?php echo get_option('submit_message', 'Vielen Dank für Ihre Anmeldung!'); ?>">
+            </div>
         <?php
     }
 
-    function pluginSettingMenuEntry(){
-        // https://developer.wordpress.org/reference/functions/add_options_page/
-        add_options_page(
-            'Registrations Settings' ,
-            'Registrations',
-            'manage_options',
-            'htl-registrations',
-            array($this, 'pluginSettingHTML')
-        );
-    }
-    
-    /**
-     * Markup für die Umsetzung der Backend Page des HTL Registrations Plugins
-     */
+    function pluginSettingHTML() {
+        // Einstellungen HTML
+        global $wpdb;
+        $users = $wpdb->get_results("SELECT *  FROM " . $wpdb->prefix . "htl_users");
 
-    function pluginSettingHTML(){
         ?>
-            <div class="wrap">
-                <h1>Registrations Settings</h1>
-                <form action="options.php" method="post">
-                    <?php
-                        settings_fields('registrations-plugin');
-                        do_settings_sections('registrations-settings-page');
-                        submit_button();
-                    ?>
+            <div class="container-fluid">
+                <div class="row mt-3">
+                    <div class="col-5">
+                        <h1>Einstellungen</h1>
+                        <form action="options.php" method="post">
+                            <?php
+                            settings_fields('it_form_plugin');
+                            do_settings_sections('it-form-settings-page');
+                            submit_button();
+                            ?>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <h1>Registrierte Benutzer</h1>
+                        <br>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Vorname</th>
+                                <th>Nachname</th>
+                                <th>EMail</th>
+                                <th>Newsletter</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($users as $row) { ?>
+                                    <tr>
+                                        <td><?php echo $row->first_name ?></td>
+                                        <td><?php echo $row->last_name ?></td>
+                                        <td><?php echo $row->email ?></td>
+                                        <td><input type="checkbox" disabled <?php echo $row->newsletter_abo ?>></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php
+    }
+
+    function outputForm() {
+        // Registrations Form
+        if (is_main_query() && !isset($_POST["first_name"])) {
+            ?>
+                <h3 class="lead">Anmeldung</h3>
+                <form action="#" method="post" class="px-5 pt-5 pb-3 mb-5 border">
+                    <input name='action' type="hidden" value='custom_form_submit'>
+                    <div class="form-group">
+                        <label>Vorname</label>
+                        <input type="text" name="first_name" class="form-control" required placeholder="David">
+                        <label>Nachname</label>
+                        <input type="text" name="last_name" class="form-control" required placeholder="Kaufmann">
+                        <label>E-Mail</label>
+                        <input type="text" name="email" class="form-control" required placeholder="d.kaufmann@htlkrems.at">
+                        <div class="form-check">
+                            <input type="checkbox" name="newsletter_abo" class="form-check-input">
+                            <label>Newsletter</label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" value="contact_form">
+                    <button class="btn btn-secondary" type="submit">Anmelden</button>
                 </form>
-        <?php
+            <?php
+        } else {
+            echo '<p>' . get_option('submit_message', 'Vielen Dank für Ihre Anmeldung!') . '</p>';
+        }
     }
 
-    /**
-     * name: muss sich mit der ID des jeweiligen Setting FIelds decken => "Display location" ist das psp_location
-     */
+    function uploadRegistration() {
+        // Database Insert
+        if (isset($_POST["first_name"]) && isset($_POST["last_name"]) && isset($_POST["email"])) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . "htl_users";
+            $first_name = sanitize_text_field($_POST["first_name"]);
+            $last_name = sanitize_text_field($_POST["last_name"]);
+            $email = sanitize_text_field($_POST["email"]);
 
-    function locationHTML(){
-        ?>
-            <select name="psp_location">
-                <option value="0"><?php selected(get_option('psp_location'), '0') ?>Beginning of post</option>
-                <option value="1"><?php selected(get_option('psp_location'), '1') ?>End of post</option>
-            </select>
-        <?php
-    }
+            if (isset($_POST["newsletter_abo"])) {
+                $newsletter = "checked";
+            } else {
+                $newsletter = "";
+            }
 
-    function headlineHTML(){
-        ?>
-            <input type="text" name="psp_headline" value="<?php echo get_option('psp_headline', 'Registrations') ?>">
-        <?php
+            $data = array('first_name' => $first_name, 'last_name' => $last_name, 'email' => $email, 'newsletter_abo' => $newsletter);
+            $wpdb -> insert($table_name, $data);
+        }
     }
 }
 
-new Registration();
+new Registrations();
